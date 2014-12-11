@@ -23,7 +23,7 @@ public class ItemAbility {
 	private String behaviorType;
 	private int manaCost;
 	//use -1 for global
-	private int range;
+	private int spellRange;
 	private boolean aoe;
 	private int radius;
 	private double cooldown;
@@ -52,7 +52,7 @@ public class ItemAbility {
 		this.abilityTags = abilityTags;
 		this.behaviorType = behaviorType;
 		this.manaCost = manaCost;
-		this.range = range;
+		this.spellRange = range;
 		this.aoe = aoe;
 		this.radius = radius;
 		this.cooldown = cooldown;
@@ -109,11 +109,11 @@ public class ItemAbility {
 	}
 
 	public int getRange() {
-		return range;
+		return spellRange;
 	}
 
 	public void setRange(int range) {
-		this.range = range;
+		this.spellRange = range;
 	}
 
 	public boolean isAoe() {

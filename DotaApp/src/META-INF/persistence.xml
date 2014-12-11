@@ -15,7 +15,6 @@
 			<class>model.AbilitySummon</class>
 			<class>model.Rank</class>
 			<class>model.HeroAbility</class>
-			
 			<properties>
 				<property name="eclipselink.jdbc.password" value="zzelda"/>
 				<property name="eclipselink.jdbc.user" value="root"/>
