@@ -5,7 +5,6 @@ import java.util.List;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
@@ -27,8 +26,6 @@ public class Item {
 	private String abilityBehavior;
 	private int itemCost;
 	private String itemShopTags;
-	@Lob
-	private String abilitySpecial;
 	private boolean isRecipe;
 	
 	//All of the subcomponents. This Item is listed as the result (toMake) attribute in the 
@@ -59,16 +56,14 @@ public class Item {
 	}
 
 	
-	public Item(int id, String name, String abilityBehavior, int itemCost,
-			String itemShopTags, String abilitySpecial, boolean isRecipe,
+	public Item(int id, String name, int itemCost,
+			String itemShopTags, boolean isRecipe,
 			List<Component> madeFrom, List<Component> usedIn) {
 		super();
 		this.id = id;
 		this.name = name;
-		this.abilityBehavior = abilityBehavior;
 		this.itemCost = itemCost;
 		this.itemShopTags = itemShopTags;
-		this.abilitySpecial = abilitySpecial;
 		this.isRecipe = isRecipe;
 		this.madeFrom = madeFrom;
 		this.usedIn = usedIn;
@@ -78,13 +73,27 @@ public class Item {
 	public Item(String itemName, JSONObject data) throws NumberFormatException, JSONException {
 		this.id = Integer.parseInt(data.getString("ID"));
 		this.name = itemName;
-		this.abilityBehavior = data.getString("AbilityBehavior");
 		this.itemCost = Integer.parseInt(data.getString("ItemCost"));
-		this.itemShopTags = data.getString("ItemShopTags");
+		if(data.has("ItemRecipe")){
+			//create components?
+			//if price == 0?
+			return;
+		}
+		//If it has an active ability...
+		if(!data.getString("AbilityBehavior").equals("DOTA_ABILITY_BEHAVIOR_PASSIVE")){
+			this.ability = new ItemAbility(this, data);
+		}
+		//If it has one of these IDs, it's an aura
+		//mek, vlad, basi, headdress, drum, pipe, AC, rad, shivas, aquila
+		if(this.id == 79 || this.id == 81 || this.id == 88 || this.id == 90 || this.id == 94 || this.id == 112 || this.id == 119 || this.id == 137 || this.id == 185 || this.id == 212){
+			this.aura = new ItemAura(this, data.getJSONObject("AbilitySpecial"));
+		}
 		if(data.has("AbilitySpecial"))
-			this.abilitySpecial = data.getJSONObject("AbilitySpecial").toString();
-		else
-			this.abilitySpecial = "";
+			this.bonuses = ItemFlatBonus.makeBonuses(this, data.getJSONObject("AbilitySpecial"));
+		
+		this.itemShopTags = data.getString("ItemShopTags");
+		
+		
 		Item.itemNameToId.put(this.name, this.id);
 
 	}
@@ -132,15 +141,6 @@ public class Item {
 	public void setItemShopTags(String itemShopTags) {
 		this.itemShopTags = itemShopTags;
 	}
-
-	public String getAbilitySpecial() {
-		return abilitySpecial;
-	}
-
-	public void setAbilitySpecial(String abilitySpecial) {
-		this.abilitySpecial = abilitySpecial;
-	}
-
 
 	public boolean isRecipe() {
 		return isRecipe;

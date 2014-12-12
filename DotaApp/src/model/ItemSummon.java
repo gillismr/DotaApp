@@ -13,6 +13,8 @@ public class ItemSummon {
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private int id;
+	
+
 	private int numberOfUnits;
 	
 	@OneToOne
@@ -22,5 +24,58 @@ public class ItemSummon {
 	@ManyToOne
 	@JoinColumn(name="SUMMON_ABILITY")
 	private ItemAbility source;
+	
+	public ItemSummon() {
+		super();
+	}
+
+	public ItemSummon(int id, int numberOfUnits, Unit summonedUnit,
+			ItemAbility source) {
+		super();
+		this.id = id;
+		this.numberOfUnits = numberOfUnits;
+		this.summonedUnit = summonedUnit;
+		this.source = source;
+	}
+
+	public ItemSummon(int numberOfUnits, Unit summonedUnit, ItemAbility source) {
+		super();
+		this.numberOfUnits = numberOfUnits;
+		this.summonedUnit = summonedUnit;
+		this.source = source;
+	}
+
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
+
+	public int getNumberOfUnits() {
+		return numberOfUnits;
+	}
+
+	public void setNumberOfUnits(int numberOfUnits) {
+		this.numberOfUnits = numberOfUnits;
+	}
+
+	public Unit getSummonedUnit() {
+		return summonedUnit;
+	}
+
+	public void setSummonedUnit(Unit summonedUnit) {
+		this.summonedUnit = summonedUnit;
+	}
+
+	public ItemAbility getSource() {
+		return source;
+	}
+
+	public void setSource(ItemAbility source) {
+		this.source = source;
+	}
+	
 	
 }

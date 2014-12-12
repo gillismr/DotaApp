@@ -38,6 +38,12 @@ public class Component {
 		this.toMake = toMake;
 	}
 
+	public Component(Item isUsed, Item toMake) {
+		super();
+		this.isUsed = isUsed;
+		this.toMake = toMake;
+	}
+
 	public int getId() {
 		return id;
 	}

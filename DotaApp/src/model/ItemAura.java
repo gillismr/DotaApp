@@ -12,6 +12,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 
+import org.json.JSONObject;
+
 @Entity
 public class ItemAura {
 	@Id
@@ -52,6 +54,19 @@ public class ItemAura {
 		this.radius = radius;
 		this.source = source;
 		this.effects = effects;
+	}
+
+	public ItemAura(int radius, Item source,
+			List<ItemAuraEffect> effects) {
+		super();
+		this.radius = radius;
+		this.source = source;
+		this.effects = effects;
+	}
+
+	public ItemAura(Item source, JSONObject data) {
+		this.source = source;
+		//TODO Parse the JSONObject data into its actual fields
 	}
 
 	public int getId() {

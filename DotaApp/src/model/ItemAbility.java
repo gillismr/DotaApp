@@ -9,8 +9,11 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.Lob;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
+
+import org.json.JSONObject;
 
 @Entity
 public class ItemAbility {
@@ -18,9 +21,11 @@ public class ItemAbility {
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private int id;
 	private String name;
-	private String rawEffects;
+	
+	@Lob
+	private String otherData;
 	private String abilityTags;
-	private String behaviorType;
+	private String abilityBehavior;
 	private int manaCost;
 	//use -1 for global
 	private int spellRange;
@@ -48,9 +53,9 @@ public class ItemAbility {
 		super();
 		this.id = id;
 		this.name = name;
-		this.rawEffects = rawEffects;
+		this.otherData = rawEffects;
 		this.abilityTags = abilityTags;
-		this.behaviorType = behaviorType;
+		this.abilityBehavior = behaviorType;
 		this.manaCost = manaCost;
 		this.spellRange = range;
 		this.aoe = aoe;
@@ -58,6 +63,31 @@ public class ItemAbility {
 		this.cooldown = cooldown;
 		this.duration = duration;
 		this.source = source;
+	}
+
+
+	public ItemAbility(String name, String rawEffects,
+			String abilityTags, String behaviorType, int manaCost, int range,
+			boolean aoe, int radius, double cooldown, double duration,
+			Item source) {
+		super();
+		this.name = name;
+		this.otherData = rawEffects;
+		this.abilityTags = abilityTags;
+		this.abilityBehavior = behaviorType;
+		this.manaCost = manaCost;
+		this.spellRange = range;
+		this.aoe = aoe;
+		this.radius = radius;
+		this.cooldown = cooldown;
+		this.duration = duration;
+		this.source = source;
+	}
+
+	
+	public ItemAbility(Item source, JSONObject data) {
+		this.source = source;
+		//TODO Parse the given JSONObject into its actual data fields
 	}
 
 	public int getId() {
@@ -77,11 +107,11 @@ public class ItemAbility {
 	}
 
 	public String getRawEffects() {
-		return rawEffects;
+		return otherData;
 	}
 
 	public void setRawEffects(String rawEffects) {
-		this.rawEffects = rawEffects;
+		this.otherData = rawEffects;
 	}
 
 	public String getAbilityTags() {
@@ -93,11 +123,11 @@ public class ItemAbility {
 	}
 
 	public String getBehaviorType() {
-		return behaviorType;
+		return abilityBehavior;
 	}
 
 	public void setBehaviorType(String behaviorType) {
-		this.behaviorType = behaviorType;
+		this.abilityBehavior = behaviorType;
 	}
 
 	public int getManaCost() {

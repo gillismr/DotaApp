@@ -3,6 +3,7 @@ package model;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 
 @Entity
@@ -10,12 +11,16 @@ public class UnitAbility {
 	@Id
 	int id;
 	String name;
+	String abilityBehavior;
+	@Lob
+	String otherData;
 	double coolDown;
 	int manaCost;
 	int spellRange;
 	boolean isAoe;
 	int radius;
 	int duration;
+	
 	
 	@ManyToOne
 	@JoinColumn(name="UNIT_ID")
@@ -25,20 +30,38 @@ public class UnitAbility {
 		super();
 	}
 
-	public UnitAbility(int id, String name, double coolDown, int manaCost,
-			int range, boolean isAoe, int radius, int duration, Unit owningUnit) {
+	public UnitAbility(int id, String name, String abilityBehavior, double coolDown, int manaCost,
+			int range, boolean isAoe, int radius, int duration, String details, Unit owningUnit) {
 		super();
 		this.id = id;
 		this.name = name;
+		this.abilityBehavior = abilityBehavior;
 		this.coolDown = coolDown;
 		this.manaCost = manaCost;
 		this.spellRange = range;
 		this.isAoe = isAoe;
 		this.radius = radius;
 		this.duration = duration;
+		this.otherData = details;
 		this.owningUnit = owningUnit;
 	}
 
+	public UnitAbility(String name, String abilityBehavior, double coolDown, int manaCost,
+			int range, boolean isAoe, int radius, int duration, String details, Unit owningUnit) {
+		super();
+		this.name = name;
+		this.abilityBehavior = abilityBehavior;
+		this.coolDown = coolDown;
+		this.manaCost = manaCost;
+		this.spellRange = range;
+		this.isAoe = isAoe;
+		this.radius = radius;
+		this.duration = duration;
+		this.otherData = details;
+		this.owningUnit = owningUnit;
+	}
+
+	
 	public int getId() {
 		return id;
 	}

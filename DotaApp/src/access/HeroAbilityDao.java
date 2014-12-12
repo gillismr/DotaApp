@@ -8,54 +8,55 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import javax.persistence.Query;
 
-import model.Hero;
+import model.HeroAbility;
 
-public class HeroDao {
+public class HeroAbilityDao {
 	private EntityManagerFactory factory = Persistence.createEntityManagerFactory("DotaApp");
 	private EntityManager em = null;
-	private static HeroDao instance = null;
+	private static HeroAbilityDao instance = null;
 	
-	protected HeroDao(){
+	protected HeroAbilityDao(){
 		em = factory.createEntityManager();
 	}
 	
-	public static HeroDao getInstance(){
+	public static HeroAbilityDao getInstance(){
 		if(instance == null)
-			instance = new HeroDao();
+			instance = new HeroAbilityDao();
 		return instance;
 	}
 	
-	public Hero findHero(int id){
-		Hero hero = null;
+	public HeroAbility findHeroAbility(int id){
+		HeroAbility heroAbility = null;
 		em.getTransaction().begin();
-		hero = em.find(Hero.class, id);
+		heroAbility = em.find(HeroAbility.class, id);
 		em.getTransaction().commit();
-		return hero;
+		return heroAbility;
 	}
 	
 	@SuppressWarnings("unchecked")
-	public List<Hero> findAllHeroes(){
-		List<Hero> heroes = new ArrayList<Hero>();
+	public List<HeroAbility> findAllHeroAbilities(){
+		List<HeroAbility> heroAbilities = new ArrayList<HeroAbility>();
 		em.getTransaction().begin();
 		Query q = em.createNamedQuery("Site.findAll");
-		heroes = q.getResultList();
+		heroAbilities = q.getResultList();
 		em.getTransaction().commit();
-		return heroes;
+		return heroAbilities;
 	}
 	
-	public void createHero(Hero hero){
+	public void createHeroAbility(HeroAbility heroAbility){
 		em.getTransaction().begin();
-		em.persist(hero);
+		em.persist(heroAbility);
 		em.getTransaction().commit();
 	}
 	
-	public void initHeroes(List<Hero> heroes){
+	public void initHeroAbilityes(List<HeroAbility> heroAbilities){
 		em.getTransaction().begin();
-		Query q = em.createNamedQuery("Hero.dropAll");
+		Query q = em.createNamedQuery("HeroAbility.dropAll");
 		q.executeUpdate();
 		em.getTransaction().commit();
-		for(Hero hero:heroes)
-			createHero(hero);
+		for(HeroAbility heroAbility:heroAbilities)
+			createHeroAbility(heroAbility);
 	}
 	
 }
+

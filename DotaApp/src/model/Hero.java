@@ -1,6 +1,8 @@
 package model;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import javax.persistence.Entity;
@@ -8,6 +10,7 @@ import javax.persistence.Id;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
+import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
@@ -58,6 +61,10 @@ public class Hero implements Serializable {
 	private int dayVision;
 	private int nightVision;
 	
+	//An easy way to look up the ID of an item if you only have its name
+	@Transient
+	public static HashMap<String, Integer> heroNameToId = new HashMap<String, Integer>();
+	
 	public Hero() {
 		super();
 	}
@@ -92,7 +99,13 @@ public class Hero implements Serializable {
 		this.baseManaRegen= Double.parseDouble(data.getString("StatusManaRegen")) ;
 		this.dayVision = Integer.parseInt(data.getString("VisionDaytimeRange")) ;
 		this.nightVision = Integer.parseInt(data.getString("VisionNighttimeRange")) ;
-		
+		this.abilities = new ArrayList<HeroAbility>();
+		heroNameToId.put(this.name, this.id);
+		for(int i = 0;data.has("Ability"+i);i++){
+			String abilityName = data.getString("Ability"+i);
+			if(!abilityName.equals("attribute_bonus"))
+				HeroAbility.abilityNameToHero.put(data.getString("Ability"+i), this.name);
+		}
 		
 	}
 	
@@ -131,6 +144,8 @@ public class Hero implements Serializable {
 		this.baseManaRegen = baseManaRegen;
 		this.dayVision = dayVision;
 		this.nightVision = nightVision;
+		heroNameToId.put(this.name, this.id);		
+
 	}
 
 	public int getId() {
@@ -138,14 +153,18 @@ public class Hero implements Serializable {
 	}
 
 	public void setId(int id) {
+		heroNameToId.remove(this.name);
 		this.id = id;
+		heroNameToId.put(this.name, this.id);
 	}
 
 	public String getName() {
 		return name;
 	}
 	public void setName(String name) {
+		heroNameToId.remove(this.name);
 		this.name = name;
+		heroNameToId.put(this.name, this.id);
 	}
 	public double getBaseArmor() {
 		return baseArmor;

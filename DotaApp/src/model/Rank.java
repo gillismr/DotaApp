@@ -56,6 +56,22 @@ public class Rank {
 		this.owningAbility = owningAbility;
 		this.summons = summons;
 	}
+	
+
+	public Rank(int spellLevel, int requiredLevel, int manaCost,
+			double coolDown, int range, int duration, String otherData,
+			HeroAbility owningAbility, List<AbilitySummon> summons) {
+		super();
+		this.spellLevel = spellLevel;
+		this.requiredLevel = requiredLevel;
+		this.manaCost = manaCost;
+		this.coolDown = coolDown;
+		this.spellRange = range;
+		this.duration = duration;
+		this.otherData = otherData;
+		this.owningAbility = owningAbility;
+		this.summons = summons;
+	}
 
 	public int getId() {
 		return id;

@@ -9,7 +9,6 @@ import java.util.Scanner;
 
 import model.Hero;
 import model.Item;
-import model.Recipe;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -151,7 +150,7 @@ public class VdfConverter {
 		return items;
 	}
 	
-	
+	/*
 	public static List<Recipe> getRecipes(String filePath){
 		List<Recipe> recipes = new ArrayList<Recipe>();
 		JSONObject rawJSON = vdfToJson(filePath);
@@ -173,13 +172,14 @@ public class VdfConverter {
 		
 		return recipes;
 	}
+	*/
 	
+	/*
 	//Not used currently
 	public static void getItemsAndMore(
 			String filePath, 
 			List<Item> items, 
-			List<Recipe> recipes
-			/*, List<ItemAbility> itemAbilities*/)
+			List<Recipe> recipes, List<ItemAbility> itemAbilities)
 	{
 		JSONObject rawJSON = vdfToJson(filePath);
 		try {
@@ -201,6 +201,7 @@ public class VdfConverter {
 		}
 	}
 	
+	*/
 	
 
 	public static void main(String[] args){
