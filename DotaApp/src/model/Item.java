@@ -3,6 +3,7 @@ package model;
 import java.util.HashMap;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.NamedQueries;
@@ -36,13 +37,13 @@ public class Item {
 	@OneToMany(mappedBy="isUsed")
 	private List<Component> usedIn;
 	
-	@OneToMany(mappedBy="source")
+	@OneToMany(mappedBy="source", cascade=CascadeType.PERSIST)
 	private List<ItemFlatBonus> bonuses;
 	
-	@OneToOne(optional=true, mappedBy="source")
+	@OneToOne(optional=true, mappedBy="source", cascade=CascadeType.PERSIST)
 	private ItemAura aura;
 	
-	@OneToOne(optional=true, mappedBy="source")
+	@OneToOne(optional=true, mappedBy="source", cascade=CascadeType.PERSIST)
 	private ItemAbility ability;
 	
 	//An easy way to look up the ID of an item if you only have its name
@@ -72,6 +73,7 @@ public class Item {
 	public Item(String itemName, JSONObject data) throws NumberFormatException, JSONException {
 		this.id = Integer.parseInt(data.getString("ID"));
 		this.name = itemName;
+		System.out.println(this.name);
 		this.itemCost = Integer.parseInt(data.getString("ItemCost"));
 		
 		//If it's a recipe, deal with it and return
@@ -81,12 +83,17 @@ public class Item {
 			return;
 		}
 		
+		
+		//NECRO: 106
+		//NECRO2: 193
+		//NECRO3: 194
+		
 		//If it's not a recipe, it has theses fields. Set them
 		this.abilityBehavior = data.getString("AbilityBehavior");
 		this.itemShopTags = data.getString("ItemShopTags");
 		
-		//If it has an active ability...
-		if(!data.getString("AbilityBehavior").equals("DOTA_ABILITY_BEHAVIOR_PASSIVE")){
+		//If it has an active ability... (exclude courier)
+		if(!data.getString("AbilityBehavior").equals("DOTA_ABILITY_BEHAVIOR_PASSIVE") && this.id != 45){
 			this.ability = new ItemAbility(this, data);
 		}
 		//If it has one of these IDs, it's an aura

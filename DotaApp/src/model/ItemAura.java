@@ -26,11 +26,11 @@ public class ItemAura {
 	int id;
 	int radius;
 	
-	@OneToOne(cascade = CascadeType.ALL, optional = false, fetch = FetchType.EAGER, orphanRemoval = true)
+	@OneToOne(optional = false, fetch = FetchType.EAGER, orphanRemoval = true)
 	@JoinColumn(name="ITEM_ID")
 	private Item source;
 	
-	@OneToMany(mappedBy="aura")
+	@OneToMany(mappedBy="aura", cascade=CascadeType.PERSIST)
 	List<ItemAuraEffect> effects;
 
 	public Item getSource() {
@@ -77,8 +77,9 @@ public class ItemAura {
 			JSONObject oneEffect = data.getJSONObject(effectNumbers.next());
 			//radius is stored as aura_radius in everything except drum
 			if(oneEffect.has("aura_radius"))
-				this.radius = oneEffect.getInt("aura_radius");
-			else this.radius = oneEffect.getInt("radius");
+				this.radius = Integer.parseInt(oneEffect.getString("aura_radius").trim());
+			else if(oneEffect.has("radius")) 
+				this.radius = Integer.parseInt(oneEffect.getString("radius"));
 		}
 		this.effects = ItemAuraEffect.makeEffects(this, data);
 				

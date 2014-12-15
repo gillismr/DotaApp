@@ -3,7 +3,6 @@ package model;
 import java.util.Iterator;
 import java.util.List;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -35,7 +34,7 @@ public class ItemAbility {
 	private double cooldown; //
 	private double duration;
 	
-	@OneToOne(cascade = CascadeType.ALL, optional = false, fetch = FetchType.EAGER, orphanRemoval = true)
+	@OneToOne(optional = false, fetch = FetchType.EAGER, orphanRemoval = true)
 	@JoinColumn(name="ITEM_ID")
 	private Item source;
 	
@@ -95,16 +94,42 @@ public class ItemAbility {
 		
 		//cooldown, manaCost, and castRange are all accessible at the item level
 		
-		if(data.has("AbilityCooldown"))
-			this.cooldown = Double.parseDouble(data.getString("AbilityCooldown"));
+		if(data.has("AbilityCooldown")){
+			//Dagon
+			if(source.getId() == 104)
+				this.cooldown = 35.0;
+			else if(source.getId() == 201)
+				this.cooldown = 30.0;
+			else if(source.getId() == 202)
+				this.cooldown = 25.0;
+			else if(source.getId() == 203)
+				this.cooldown = 20.0;
+			else if(source.getId() == 204)
+				this.cooldown = 15.0;
+			//BKB TODO Implement multiple BKB items/level?
+			else if(source.getId() == 116)
+				this.cooldown = 67.5;
+			else this.cooldown = Double.parseDouble(data.getString("AbilityCooldown"));
+		}
 		else this.cooldown = 0;
 		
 		if(data.has("AbilityManaCost"))
 			this.manaCost= Integer.parseInt(data.getString("AbilityManaCost"));
 		else this.manaCost = 0;
 		
-		if(data.has("AbilityCastRange"))
-			this.castRange = Integer.parseInt(data.getString("AbilityCastRange"));
+		if(data.has("AbilityCastRange")){
+			if(source.getId() == 104)
+				this.castRange = 600;
+			else if(source.getId() == 201)
+				this.castRange = 650;
+			else if(source.getId() == 202)
+				this.castRange = 700;
+			else if(source.getId() == 203)
+				this.castRange = 750;
+			else if(source.getId() == 204)
+				this.castRange = 800;
+			else this.castRange = Integer.parseInt(data.getString("AbilityCastRange"));
+		}
 		else this.castRange = 0;
 		
 		//TODO
@@ -215,7 +240,9 @@ public class ItemAbility {
 			}
 			*/
 			else if(oneEffect.has("duration")){
-				this.duration = Double.parseDouble(oneEffect.getString("duration"));
+				if(source.getId() == 116)
+					this.duration = 7.5;
+				else this.duration = Double.parseDouble(oneEffect.getString("duration"));
 			}
 			else if(oneEffect.has("static_duration")){
 				this.duration = Double.parseDouble(oneEffect.getString("static_duration"));

@@ -19,7 +19,7 @@ public class MyDatabasePopulater {
 		
 		items = VdfConverter.getItems("text/items.txt");
 		ItemDao itemDao = ItemDao.getInstance();
-		//itemDao.initItems(items);
+		itemDao.initItems(items);
 		
 	}
 

@@ -100,7 +100,7 @@ public class ItemFlatBonus {
 					keyedBonuses.put(FlatBonusType.ARMOR, Double.parseDouble(oneBonus.getString("bonus_armor")));
 				
 				if(oneBonus.has("bonus_magical_armor"))
-					keyedBonuses.put(FlatBonusType.MAGIC_RES, Double.parseDouble(oneBonus.getString("bonus_magic_armor")));
+					keyedBonuses.put(FlatBonusType.MAGIC_RES, Double.parseDouble(oneBonus.getString("bonus_magical_armor")));
 				if(oneBonus.has("magic_resistance"))
 					keyedBonuses.put(FlatBonusType.MAGIC_RES, Double.parseDouble(oneBonus.getString("magic_resistance")));
 				if(oneBonus.has("bonus_spell_resist"))
@@ -109,16 +109,52 @@ public class ItemFlatBonus {
 				if(oneBonus.has("bonus_evasion"))
 					keyedBonuses.put(FlatBonusType.EVASION, Double.parseDouble(oneBonus.getString("bonus_evasion")));
 								
-				if(oneBonus.has("bonus_agility"))
-					keyedBonuses.put(FlatBonusType.AGI, Double.parseDouble(oneBonus.getString("bonus_agility")));
+				if(oneBonus.has("bonus_agility")){
+					//Diffusal
+					if(source.getId() == 174)
+						keyedBonuses.put(FlatBonusType.AGI, 20);
+					else if (source.getId() == 196)
+						keyedBonuses.put(FlatBonusType.AGI, 35);
+					else keyedBonuses.put(FlatBonusType.AGI, Double.parseDouble(oneBonus.getString("bonus_agility")));
+				}
 				
-				if(oneBonus.has("bonus_intellect"))
-					keyedBonuses.put(FlatBonusType.INT, Double.parseDouble(oneBonus.getString("bonus_intellect")));
+				if(oneBonus.has("bonus_intellect")){
+					//Necro & Diffusal & Dagon
+					if(source.getId() == 106)
+						keyedBonuses.put(FlatBonusType.INT, 15);
+					else if (source.getId() == 174)
+						keyedBonuses.put(FlatBonusType.INT, 6);
+					else if (source.getId() == 193)
+						keyedBonuses.put(FlatBonusType.INT, 21);
+					else if (source.getId() == 194)
+						keyedBonuses.put(FlatBonusType.INT, 24);
+					else if (source.getId() == 196)
+						keyedBonuses.put(FlatBonusType.INT, 10);
+					else if(source.getId() == 104)
+						keyedBonuses.put(FlatBonusType.INT, 13);
+					else if(source.getId() == 201)
+						keyedBonuses.put(FlatBonusType.INT, 16);
+					else if(source.getId() == 202)
+						keyedBonuses.put(FlatBonusType.INT, 19);
+					else if(source.getId() == 203)
+						keyedBonuses.put(FlatBonusType.INT, 22);
+					else if(source.getId() == 204)
+						keyedBonuses.put(FlatBonusType.INT, 25);
+					else keyedBonuses.put(FlatBonusType.INT, Double.parseDouble(oneBonus.getString("bonus_intellect")));
+				}
 				if(oneBonus.has("bonus_int"))
 					keyedBonuses.put(FlatBonusType.INT, Double.parseDouble(oneBonus.getString("bonus_int")));
 				
-				if(oneBonus.has("bonus_strength"))
-					keyedBonuses.put(FlatBonusType.STR, Double.parseDouble(oneBonus.getString("bonus_strength")));
+				if(oneBonus.has("bonus_strength")){
+					//Necro
+					if(source.getId() == 106)
+						keyedBonuses.put(FlatBonusType.STR, 8);
+					else if (source.getId() == 193)
+						keyedBonuses.put(FlatBonusType.STR, 12);
+					else if (source.getId() == 194)
+						keyedBonuses.put(FlatBonusType.STR, 16);
+					else keyedBonuses.put(FlatBonusType.STR, Double.parseDouble(oneBonus.getString("bonus_strength")));
+				}
 				
 				if(oneBonus.has("bonus_all_stats")){
 					keyedBonuses.put(FlatBonusType.AGI, Double.parseDouble(oneBonus.getString("bonus_all_stats")));
@@ -198,7 +234,7 @@ public class ItemFlatBonus {
 				if(oneBonus.has("block_damage_melee"))
 					keyedBonuses.put(FlatBonusType.BLOCK_MELEE, Double.parseDouble(oneBonus.getString("block_damage_melee")));
 				if(oneBonus.has("damage_block_melee"))
-					keyedBonuses.put(FlatBonusType.BLOCK_MELEE, Double.parseDouble(oneBonus.getString("block_damage_melee")));
+					keyedBonuses.put(FlatBonusType.BLOCK_MELEE, Double.parseDouble(oneBonus.getString("damage_block_melee")));
 				
 				if(oneBonus.has("block_damage_ranged"))
 					keyedBonuses.put(FlatBonusType.BLOCK_RANGED, Double.parseDouble(oneBonus.getString("block_damage_ranged")));
