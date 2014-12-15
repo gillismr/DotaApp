@@ -141,9 +141,7 @@ public class VdfConverter {
 			while(itemNames.hasNext()){
 				String itemName = itemNames.next();
 				JSONObject item = trimmedJSON.getJSONObject(itemName);
-				//System.out.println(item.getInt("ID"));
-				if(!item.has("ItemRecipe"))
-					items.add(new Item(itemName, item));
+				items.add(new Item(itemName, item));
 			}
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block

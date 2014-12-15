@@ -8,6 +8,7 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import javax.persistence.Query;
 
+import model.Component;
 import model.Item;
 
 public class ItemDao {
@@ -56,6 +57,16 @@ public class ItemDao {
 		em.getTransaction().commit();
 		for(Item item:items)
 			createItem(item);
+	}
+	
+	public void removeItem(Item item){
+		em.getTransaction().begin();
+		em.remove(item);
+		em.getTransaction().commit();
+	}
+
+	public List<Component> initComponents(List<Item> items){
+		return null;
 	}
 	
 }

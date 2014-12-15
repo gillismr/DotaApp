@@ -89,9 +89,6 @@ public class ItemAbility {
 		this.abilityBehavior = data.getString("AbilityBehavior");
 		JSONObject abilitySpecial = data.getJSONObject("AbilitySpecial");
 		
-		//Need special consideration for dagon, necro, diffusal
-		//Also cooldown and duration for BKB
-		
 		//cooldown, manaCost, and castRange are all accessible at the item level
 		
 		if(data.has("AbilityCooldown")){
@@ -106,7 +103,8 @@ public class ItemAbility {
 				this.cooldown = 20.0;
 			else if(source.getId() == 204)
 				this.cooldown = 15.0;
-			//BKB TODO Implement multiple BKB items/level?
+			//BKB with it's average cooldown
+			//TODO Implement multiple BKB items/level?
 			else if(source.getId() == 116)
 				this.cooldown = 67.5;
 			else this.cooldown = Double.parseDouble(data.getString("AbilityCooldown"));
@@ -118,6 +116,7 @@ public class ItemAbility {
 		else this.manaCost = 0;
 		
 		if(data.has("AbilityCastRange")){
+			//Dagon
 			if(source.getId() == 104)
 				this.castRange = 600;
 			else if(source.getId() == 201)
@@ -240,6 +239,8 @@ public class ItemAbility {
 			}
 			*/
 			else if(oneEffect.has("duration")){
+				//BKB with it's average duration
+				//TODO Implement multiple BKB items/levels?
 				if(source.getId() == 116)
 					this.duration = 7.5;
 				else this.duration = Double.parseDouble(oneEffect.getString("duration"));

@@ -1,5 +1,6 @@
 package model;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -14,6 +15,8 @@ import javax.persistence.Transient;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import access.ItemDao;
 
 @Entity
 @NamedQueries({
@@ -30,12 +33,18 @@ public class Item {
 	
 	//All of the subcomponents. This Item is listed as the result (toMake) attribute in the 
 	// referencing table (Component)
-	@OneToMany(mappedBy="toMake")
+	@OneToMany(mappedBy="toMake", cascade=CascadeType.PERSIST)
 	private List<Component> madeFrom;
 	
 	//All of the recipes this item is used in. This Item is listed as the true component (isUsed) attribute in the referencing table (Component)
-	@OneToMany(mappedBy="isUsed")
+	@OneToMany(mappedBy="isUsed", cascade=CascadeType.PERSIST)
 	private List<Component> usedIn;
+	
+	@Transient
+	private String itemRequirements;
+	
+	@Transient
+	private String itemResult;
 	
 	@OneToMany(mappedBy="source", cascade=CascadeType.PERSIST)
 	private List<ItemFlatBonus> bonuses;
@@ -78,15 +87,17 @@ public class Item {
 		
 		//If it's a recipe, deal with it and return
 		if(data.has("ItemRecipe")){
-			//create components?
-			//if price == 0?
+			this.isRecipe = true;
+			this.itemResult = data.getString("ItemResult");
+			JSONObject itemRequirements = data.getJSONObject("ItemRequirements");
+			if(itemRequirements.has("01"))
+				this.itemRequirements = itemRequirements.getString("01");
+			else this.itemRequirements = itemRequirements.getString("02");
+			if (this.itemCost > 0)
+				Item.itemNameToId.put(this.name, this.id);
 			return;
 		}
 		
-		
-		//NECRO: 106
-		//NECRO2: 193
-		//NECRO3: 194
 		
 		//If it's not a recipe, it has theses fields. Set them
 		this.abilityBehavior = data.getString("AbilityBehavior");
@@ -164,6 +175,26 @@ public class Item {
 	}
 
 
+	public String getItemRequirements() {
+		return itemRequirements;
+	}
+
+
+	public void setItemRequirements(String itemRequirements) {
+		this.itemRequirements = itemRequirements;
+	}
+
+
+	public String getItemResult() {
+		return itemResult;
+	}
+
+
+	public void setItemResult(String itemResult) {
+		this.itemResult = itemResult;
+	}
+
+
 	public List<Component> getMadeFrom() {
 		return madeFrom;
 	}
@@ -181,6 +212,31 @@ public class Item {
 
 	public void setUsedIn(List<Component> usedIn) {
 		this.usedIn = usedIn;
+	}
+
+	
+	//Not sure if this should go here, but it made sense to have the Item class modify the fields of Items
+	public static List<Item> setRecipes(List<Item> origItems) {
+		ArrayList<Item> updatedItems = new ArrayList<Item>();
+		ItemDao itemDao = ItemDao.getInstance();
+		for(Item item:origItems){
+			if(item.isRecipe()){
+				Item resultItem = itemDao.findItem(Item.itemNameToId.get(item.getItemResult()));
+				for(String oneRequirement:item.getItemRequirements().split(";")){
+					Item componentItem = itemDao.findItem(Item.itemNameToId.get(oneRequirement));
+					Component newComponent = new Component(componentItem, resultItem);
+					componentItem.getUsedIn().add(newComponent);
+					resultItem.getMadeFrom().add(newComponent);
+				}
+				if(item.getItemCost() == 0)
+					itemDao.removeItem(item);
+				else updatedItems.add(item);
+				
+			}
+			else
+				updatedItems.add(item);
+		}
+		return updatedItems;
 	}
 
 

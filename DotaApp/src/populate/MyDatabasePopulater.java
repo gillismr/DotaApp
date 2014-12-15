@@ -20,6 +20,9 @@ public class MyDatabasePopulater {
 		items = VdfConverter.getItems("text/items.txt");
 		ItemDao itemDao = ItemDao.getInstance();
 		itemDao.initItems(items);
+		Item.setRecipes(itemDao.findAllItems());
+		//Find all non-item recipes and drop them after setting relevant references
+		//Also set relevant references for items with recipes 
 		
 	}
 

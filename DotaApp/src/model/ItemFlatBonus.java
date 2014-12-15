@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Map;
 
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -23,6 +25,7 @@ public class ItemFlatBonus {
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private int id;
 	
+	@Enumerated(EnumType.STRING)
 	private FlatBonusType type;
 	private double value;
 	
@@ -247,8 +250,11 @@ public class ItemFlatBonus {
 					keyedBonuses.put(FlatBonusType.BLOCK_CHANCE, Double.parseDouble(oneBonus.getString("block_chance")));
 		}
 		
-		for(Map.Entry<FlatBonusType, Double> onePair : keyedBonuses.entrySet())
-			bonuses.add(new ItemFlatBonus(onePair.getKey(), onePair.getValue(), source));
+		for(Map.Entry<FlatBonusType, Double> onePair : keyedBonuses.entrySet()){
+			double value = onePair.getValue();
+			if(value !=0)
+				bonuses.add(new ItemFlatBonus(onePair.getKey(), value, source));
+		}
 		return bonuses;
 	}
 	
