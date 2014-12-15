@@ -2,16 +2,17 @@ package model;
 
 public enum AuraType {
 	ARMOR,
-	AS,
-	MS_PERC,
+	AS,	
 	MANA_REGEN_FLAT,
-	
+	DMG,
+	MS_PERC,
 	HP_REGEN_FLAT,
-	BONUS_DMG_FLAT,
+	HP_REGEN_PERC,
 	MAGIC_RES,
-	
 	DMG_PERC,
+	LIFESTEAL,
 	DPS,
-	
+	BASE_ARMOR,
+	DPS_PURE
 	
 }

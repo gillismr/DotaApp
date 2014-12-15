@@ -1,5 +1,6 @@
 package model;
 
+import java.util.Iterator;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -12,10 +13,14 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 @Entity
 public class ItemAura {
+	//These are the items with auras:
+	//mek, vlad, basi, headdress, drum, pipe, AC, rad, shivas, aquila
+	
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	int id;
@@ -64,9 +69,19 @@ public class ItemAura {
 		this.effects = effects;
 	}
 
-	public ItemAura(Item source, JSONObject data) {
+	@SuppressWarnings("unchecked")
+	public ItemAura(Item source, JSONObject data) throws JSONException {
 		this.source = source;
-		//TODO Parse the JSONObject data into its actual fields
+		Iterator<String> effectNumbers = data.keys();
+		while(effectNumbers.hasNext()){
+			JSONObject oneEffect = data.getJSONObject(effectNumbers.next());
+			//radius is stored as aura_radius in everything except drum
+			if(oneEffect.has("aura_radius"))
+				this.radius = oneEffect.getInt("aura_radius");
+			else this.radius = oneEffect.getInt("radius");
+		}
+		this.effects = ItemAuraEffect.makeEffects(this, data);
+				
 	}
 
 	public int getId() {

@@ -3,6 +3,8 @@ package populate;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.HashSet;
+//import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Scanner;
@@ -203,10 +205,73 @@ public class VdfConverter {
 	
 	*/
 	
-
+	
+	
+	//Prints all unique labels within AbilitySpecial
+	@SuppressWarnings("unchecked")
 	public static void main(String[] args){
+		HashSet<String> effectLabels = new HashSet<String>();
 		JSONObject rawItemJSON = vdfToJson("text/items.txt");
-		System.out.println(rawItemJSON.toString().substring(0, 100));
+		try {
+			JSONObject trimmedItemJSON = trimRawItemJSON(rawItemJSON);
+			//System.out.println(trimmedItemJSON.toString().substring(0,  500));
+			Iterator<String> itemKeys = trimmedItemJSON.keys();
+			while(itemKeys.hasNext()){
+				JSONObject oneItem = trimmedItemJSON.getJSONObject(itemKeys.next());
+				if(oneItem.has("AbilitySpecial")){
+					JSONObject abilitySpecial = oneItem.getJSONObject("AbilitySpecial");
+					Iterator<String> effectNumbers = abilitySpecial.keys();
+					while(effectNumbers.hasNext()){
+						JSONObject oneEffect = abilitySpecial.getJSONObject(effectNumbers.next());
+						if(oneEffect.has("var_type"))
+							oneEffect.remove("var_type");
+						Iterator<String> effects = oneEffect.keys();
+						while(effects.hasNext()){
+							effectLabels.add(effects.next());
+						}
+					}
+				}
+			}
+			
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		Iterator<String> effectIter = effectLabels.iterator();
+		int i = 0;
+		while(effectIter.hasNext()){
+			i++;
+			System.out.println(i + "\t" + effectIter.next());
+		}
 	}
 	
+	
+	/*
+	//Prints the number of non-recipe items and the number of those items that have the field "AbilityBehavior"
+	@SuppressWarnings("unchecked")
+	public static void main(String[] args){
+		JSONObject rawItemJSON = vdfToJson("text/items.txt");
+		try {
+			JSONObject trimmedItemJSON = trimRawItemJSON(rawItemJSON);
+			Iterator<String> itemKeys = trimmedItemJSON.keys();
+			int itemCount = 0, abilityBehaviorCount = 0;
+			while(itemKeys.hasNext()){
+				JSONObject oneItem = trimmedItemJSON.getJSONObject(itemKeys.next());
+				if(oneItem.has("ItemRecipe"))
+					continue;
+				itemCount++;
+				if(oneItem.has("ItemShopTags"))
+					abilityBehaviorCount++;
+			}
+			System.out.println("Items: " + itemCount);
+			System.out.println("Items with AbilityBehavior: " + abilityBehaviorCount);
+			
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		
+	}
+	*/
 }

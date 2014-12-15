@@ -5,7 +5,6 @@ import java.util.List;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.persistence.Lob;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
@@ -74,11 +73,18 @@ public class Item {
 		this.id = Integer.parseInt(data.getString("ID"));
 		this.name = itemName;
 		this.itemCost = Integer.parseInt(data.getString("ItemCost"));
+		
+		//If it's a recipe, deal with it and return
 		if(data.has("ItemRecipe")){
 			//create components?
 			//if price == 0?
 			return;
 		}
+		
+		//If it's not a recipe, it has theses fields. Set them
+		this.abilityBehavior = data.getString("AbilityBehavior");
+		this.itemShopTags = data.getString("ItemShopTags");
+		
 		//If it has an active ability...
 		if(!data.getString("AbilityBehavior").equals("DOTA_ABILITY_BEHAVIOR_PASSIVE")){
 			this.ability = new ItemAbility(this, data);
@@ -91,7 +97,6 @@ public class Item {
 		if(data.has("AbilitySpecial"))
 			this.bonuses = ItemFlatBonus.makeBonuses(this, data.getJSONObject("AbilitySpecial"));
 		
-		this.itemShopTags = data.getString("ItemShopTags");
 		
 		
 		Item.itemNameToId.put(this.name, this.id);

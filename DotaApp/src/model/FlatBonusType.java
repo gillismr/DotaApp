@@ -3,12 +3,8 @@ package model;
 public enum FlatBonusType {
 	DMG,
 	ARMOR,
-	HP,
-	HP_REGEN_FLAT,
-	HP_REGEN_PERC,
-	MANA,
-	MANA_REGEN_FLAT,
-	MANA_REGEN_PERC,
+	MAGIC_RES,
+	EVASION,
 	AGI,
 	INT,
 	STR,
@@ -17,10 +13,13 @@ public enum FlatBonusType {
 	//Move speed
 	MS_FLAT,
 	MS_PERC,
-	MAGIC_RES,
-	DMG_BLOCK,
-	EVASION,
-	NONHERO_BONUS_PERC
-	
+	HP,
+	HP_REGEN_FLAT,
+	HP_REGEN_PERC,
+	MANA,
+	MANA_REGEN_PERC,
+	BLOCK_MELEE,
+	BLOCK_RANGED,
+	BLOCK_CHANCE
 	
 }
