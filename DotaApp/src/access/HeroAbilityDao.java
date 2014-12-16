@@ -49,7 +49,7 @@ public class HeroAbilityDao {
 		em.getTransaction().commit();
 	}
 	
-	public void initHeroAbilityes(List<HeroAbility> heroAbilities){
+	public void initHeroAbilities(List<HeroAbility> heroAbilities){
 		em.getTransaction().begin();
 		Query q = em.createNamedQuery("HeroAbility.dropAll");
 		q.executeUpdate();

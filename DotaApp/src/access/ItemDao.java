@@ -34,6 +34,14 @@ public class ItemDao {
 		return item;
 	}
 	
+	public Item findItem(String name) {
+		Item item = null;
+		em.getTransaction().begin();
+		item = em.find(Item.class, name);
+		em.getTransaction().commit();
+		return item;
+	}
+	
 	@SuppressWarnings("unchecked")
 	public List<Item> findAllItems(){
 		List<Item> items = new ArrayList<Item>();
@@ -65,8 +73,51 @@ public class ItemDao {
 		em.getTransaction().commit();
 	}
 
-	public List<Component> initComponents(List<Item> items){
-		return null;
+	public List<Item> findAllComponentsExhaustive(int id){
+		List<Item> allSubItems = new ArrayList<Item>();
+		Item subItem = null;
+		Item rootItem = this.findItem(id);
+		for(Component onePart:rootItem.getMadeFrom()){
+			subItem = this.findItem(onePart.getIsUsed().getId());
+			allSubItems.add(subItem);
+			allSubItems.addAll(this.findAllComponentsExhaustive(subItem.getId()));
+		}
+		return allSubItems;
 	}
+
+	public List<Item> findAllComponentsExhaustive(String name) {
+		List<Item> allSubItems = new ArrayList<Item>();
+		Item subItem = null;
+		Item rootItem = this.findItem(name);
+		for(Component onePart:rootItem.getMadeFrom()){
+			subItem = this.findItem(onePart.getIsUsed().getId());
+			allSubItems.add(subItem);
+			allSubItems.addAll(this.findAllComponentsExhaustive(subItem.getId()));
+		}
+		return allSubItems;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public List<Item> findAllItemsWithAura(){
+		List<Item> auraItems = new ArrayList<Item>();
+		em.getTransaction().begin();
+		Query q = em.createQuery("SELECT i.* from item i join itemaura ia ON ia.ITEM_ID = i.ID");
+		auraItems = q.getResultList();
+		em.getTransaction().commit();
+		return auraItems;
+	}
+	
+
+	@SuppressWarnings("unchecked")
+	public List<Item> findAllItemsWithAbility(){
+		List<Item> abilityItems = new ArrayList<Item>();
+		em.getTransaction().begin();
+		Query q = em.createQuery("SELECT i.* from item i join itemability ia ON ia.ITEM_ID = i.ID");
+		abilityItems = q.getResultList();
+		em.getTransaction().commit();
+		return abilityItems;
+	}
+
+	
 	
 }

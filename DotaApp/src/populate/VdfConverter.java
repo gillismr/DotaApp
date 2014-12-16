@@ -8,9 +8,12 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Scanner;
+import java.util.Set;
 
 import model.Hero;
+import model.HeroAbility;
 import model.Item;
+import model.Unit;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -108,6 +111,92 @@ public class VdfConverter {
 		}
 		return heroes;
 	}
+	
+	public static JSONObject parseRawUnitJSON(JSONObject rawUnitJSON) 
+			throws JSONException
+	{
+		JSONObject updatedUnits = new JSONObject();
+		JSONObject rawUnitsJSON = (JSONObject) rawUnitJSON.get("DOTAUnits");
+		JSONObject baseUnit = (JSONObject) rawUnitsJSON.get("npc_dota_unit_base");
+		@SuppressWarnings("unchecked")
+		Iterator<String> unitKeys = rawUnitsJSON.keys();
+		while(unitKeys.hasNext()){
+			String unitKey = unitKeys.next();
+			if(unitKey.equals("Version") || unitKey.equals("npc_dota_units_base"))
+				continue;
+			JSONObject toUpdate = (JSONObject) rawUnitsJSON.get(unitKey);
+			//Let's just work with neutrals for now!
+			if(!toUpdate.has("IsNeutral")) continue;
+			addDefaults(baseUnit, toUpdate);
+			updatedUnits.put(unitKey, toUpdate);
+		}
+				
+		return updatedUnits;
+	}
+	
+	
+	@SuppressWarnings("unchecked")
+	public static List<Unit> getUnits(String filePath){
+		JSONObject rawUnitJSON = vdfToJson(filePath);
+		List<Unit> units = new ArrayList<Unit>();
+		try {
+			JSONObject jsonUnits = (JSONObject) parseRawUnitJSON(rawUnitJSON);
+			Iterator<String> unitNames = jsonUnits.keys();
+			units = new ArrayList<Unit>();
+			while(unitNames.hasNext()){
+				String unitName = unitNames.next();
+				units.add(new Unit(unitName, jsonUnits.getJSONObject(unitName)));
+			}
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return units;
+	}
+	
+
+	public static JSONObject parseRawAbilityJSON(JSONObject rawAbilityJSON) 
+			throws JSONException
+	{
+		JSONObject updatedAbilities = new JSONObject();
+		JSONObject rawAbilitiesJSON = (JSONObject) rawAbilityJSON.get("DOTAAbilities");
+		JSONObject baseAbility = (JSONObject) rawAbilitiesJSON.get("ability_base");
+		@SuppressWarnings("unchecked")
+		Iterator<String> abilityKeys = rawAbilitiesJSON.keys();
+		while(abilityKeys.hasNext()){
+			
+			String abilityKey = abilityKeys.next();
+			if(abilityKey.equals("Version") || abilityKey.equals("ability_base") || abilityKey.equals("default_attack") || abilityKey.equals("attribute_bonus"))
+				continue;
+			JSONObject toUpdate = (JSONObject) rawAbilitiesJSON.get(abilityKey);
+			addDefaults(baseAbility, toUpdate);
+			updatedAbilities.put(abilityKey, toUpdate);
+		}
+		return updatedAbilities;
+	}
+	
+	//Requires that we populate the DB with Heroes first, so we can use the static map in the hero class for its ability mapping
+	@SuppressWarnings("unchecked")
+	public static List<HeroAbility> getHeroAbilities(String filePath){
+		JSONObject rawAbilityJSON = vdfToJson(filePath);
+		List<HeroAbility> abilities = new ArrayList<HeroAbility>();
+		try {
+			JSONObject jsonAbilities = (JSONObject) parseRawAbilityJSON(rawAbilityJSON);
+			Iterator<String> abilityNames = jsonAbilities.keys();
+			while(abilityNames.hasNext()){
+				String abilityName = abilityNames.next();
+				//If this label corresponds to a HeroAbility...
+				if(HeroAbility.abilityNameToHero.containsKey(abilityName)){
+					System.out.println("Found an ability whose hero we know, constructing it now");
+					abilities.add(new HeroAbility(abilityName, jsonAbilities.getJSONObject(abilityName)));
+				}
+			}
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return abilities;
+	}
 
 
 	private static JSONObject trimRawItemJSON(JSONObject rawItemJSON)
@@ -150,61 +239,26 @@ public class VdfConverter {
 		return items;
 	}
 	
-	/*
-	public static List<Recipe> getRecipes(String filePath){
-		List<Recipe> recipes = new ArrayList<Recipe>();
-		JSONObject rawJSON = vdfToJson(filePath);
-		try {
-			JSONObject trimmedJSON = trimRawItemJSON(rawJSON);
-			@SuppressWarnings("unchecked")
-			Iterator<String> itemNames = trimmedJSON.keys();
-			while(itemNames.hasNext()){
-				String itemName = itemNames.next();
-				JSONObject item = trimmedJSON.getJSONObject(itemName);
-				if(item.has("ItemRecipe"))
-					recipes.add(new Recipe(itemName, item));
-			}
-		} catch (JSONException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		
-		return recipes;
-	}
-	*/
 	
-	/*
-	//Not used currently
-	public static void getItemsAndMore(
-			String filePath, 
-			List<Item> items, 
-			List<Recipe> recipes, List<ItemAbility> itemAbilities)
-	{
-		JSONObject rawJSON = vdfToJson(filePath);
-		try {
-			JSONObject trimmedJSON = (JSONObject) trimRawItemJSON(rawJSON);
-			@SuppressWarnings("unchecked")
-			Iterator<String> itemNames = trimmedJSON.keys();
-			while(itemNames.hasNext()){
-				String itemName = itemNames.next();
-				JSONObject item = trimmedJSON.getJSONObject(itemName);
-				//System.out.println(item.getInt("ID"));
-				if(item.has("ItemRecipe"))
-					recipes.add(new Recipe(itemName, item));
-				else
-					items.add(new Item(itemName, item));
-			}
-		} catch (JSONException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+	//@SuppressWarnings("unchecked")
+	public static void main(String[] args){
+		List<HeroAbility> abilities = getHeroAbilities("text/npc_abilities.txt");
+		/*
+		Iterator<String> abilityNames = heroAbilities.keys();
+		String abilityName, heroName;
+		Set<String> uniqueNames = new HashSet<String>();
+		while(abilityNames.hasNext()){
+			abilityName = abilityNames.next();
+			heroName = abilityName.substring(0, abilityName.indexOf('_'));
+			uniqueNames.add(heroName);
 		}
+		Iterator<String> nameIter = uniqueNames.iterator();
+		while(nameIter.hasNext())
+			System.out.println(nameIter.next());
+		 */
 	}
 	
-	*/
-	
-	
-	
+	/*
 	//Prints all unique labels within AbilitySpecial
 	@SuppressWarnings("unchecked")
 	public static void main(String[] args){
@@ -242,7 +296,7 @@ public class VdfConverter {
 			System.out.println(i + "\t" + effectIter.next());
 		}
 	}
-	
+	*/
 	
 	/*
 	//Prints the number of non-recipe items and the number of those items that have the field "AbilityBehavior"

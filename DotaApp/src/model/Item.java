@@ -82,7 +82,6 @@ public class Item {
 	public Item(String itemName, JSONObject data) throws NumberFormatException, JSONException {
 		this.id = Integer.parseInt(data.getString("ID"));
 		this.name = itemName;
-		System.out.println(this.name);
 		this.itemCost = Integer.parseInt(data.getString("ItemCost"));
 		
 		//If it's a recipe, deal with it and return

@@ -1,17 +1,23 @@
 package model;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Transient;
 
+import org.json.JSONObject;
+
 @Entity
 public class Unit {
 	@Id
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	int id;
 	String name;
 	int level;
@@ -134,6 +140,17 @@ public class Unit {
 		this.summonedByItem = summonedByItem;
 		this.summonedByAbility = summonedByAbility;
 		unitNameToId.put(this.name, this.id);
+	}
+
+	public Unit(String unitName, JSONObject data) {
+		this.name = unitName;
+		Iterator<String> attributeNames = data.keys();
+		while(attributeNames.hasNext()){
+			String attributeName = attributeNames.next();
+			if(data.has(attributeName));
+			
+		}
+			
 	}
 
 	public int getId() {

@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.NamedQueries;
@@ -33,7 +34,7 @@ public class Hero implements Serializable {
 	@XmlAttribute
 	private String name;
 		
-	@OneToMany(mappedBy="owningHero")
+	@OneToMany(mappedBy="owningHero", cascade=CascadeType.PERSIST)
 	private List<HeroAbility> abilities;
 	
 	private double baseArmor;
@@ -101,10 +102,12 @@ public class Hero implements Serializable {
 		this.nightVision = Integer.parseInt(data.getString("VisionNighttimeRange")) ;
 		this.abilities = new ArrayList<HeroAbility>();
 		heroNameToId.put(this.name, this.id);
-		for(int i = 0;data.has("Ability"+i);i++){
+		
+		//THIS IS SUPER ESSENTIAL TO HOW we populate our HeroAbilities
+		for(int i = 1;data.has("Ability"+i);i++){
 			String abilityName = data.getString("Ability"+i);
 			if(!abilityName.equals("attribute_bonus"))
-				HeroAbility.abilityNameToHero.put(data.getString("Ability"+i), this.name);
+				HeroAbility.abilityNameToHero.put(abilityName, this.id);
 		}
 		
 	}
@@ -309,6 +312,14 @@ public class Hero implements Serializable {
 	}
 	public void setNightVision(int nightVision) {
 		this.nightVision = nightVision;
+	}
+
+	public List<HeroAbility> getAbilities() {
+		return abilities;
+	}
+
+	public void setAbilities(List<HeroAbility> abilities) {
+		this.abilities = abilities;
 	}
 	
 	

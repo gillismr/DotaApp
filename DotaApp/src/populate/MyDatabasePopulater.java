@@ -3,9 +3,11 @@ package populate;
 import java.util.ArrayList;
 import java.util.List;
 
+import access.HeroAbilityDao;
 import access.HeroDao;
 import access.ItemDao;
 import model.Hero;
+import model.HeroAbility;
 import model.Item;
 
 public class MyDatabasePopulater {
@@ -20,9 +22,13 @@ public class MyDatabasePopulater {
 		items = VdfConverter.getItems("text/items.txt");
 		ItemDao itemDao = ItemDao.getInstance();
 		itemDao.initItems(items);
-		Item.setRecipes(itemDao.findAllItems());
 		//Find all non-item recipes and drop them after setting relevant references
 		//Also set relevant references for items with recipes 
+		Item.setRecipes(itemDao.findAllItems());
+		
+		List<HeroAbility> heroAbilities = new ArrayList<HeroAbility>();
+		heroAbilities = VdfConverter.getHeroAbilities("text/npc_abilities.txt");
+		
 		
 	}
 

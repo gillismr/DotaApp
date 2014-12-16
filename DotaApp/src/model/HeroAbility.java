@@ -3,19 +3,26 @@ package model;
 import java.util.HashMap;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Transient;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import access.HeroDao;
+
 @Entity
 @NamedQueries({
 	@NamedQuery(name="HeroAbility.findAll", query="SELECT ha FROM HeroAbility ha"),
-	@NamedQuery(name="HeroAbility.dropAll", query="DELETE FROM HeroAbility ha")})
+	})
 public class HeroAbility {
 	
 	@Id
@@ -25,18 +32,19 @@ public class HeroAbility {
 	private boolean isUltimate;
 	
 	//MECHANICS WILL GO HERE
+	@Lob
 	private String abilityBehavior;
 	
 	
-	@ManyToOne
+	@ManyToOne(cascade=CascadeType.PERSIST)
 	@JoinColumn(name="HERO_ID")
 	private Hero owningHero;
 	
-	@OneToMany(mappedBy="owningAbility")
+	@OneToMany(mappedBy="owningAbility", cascade=CascadeType.PERSIST)
 	private List<Rank> ranks;
 	
 	@Transient
-	public static HashMap<String, String> abilityNameToHero = new HashMap<String, String>();
+	public static HashMap<String, Integer> abilityNameToHero = new HashMap<String, Integer>();
 
 	public int getId() {
 		return id;
@@ -108,6 +116,18 @@ public class HeroAbility {
 		this.name = name;
 		this.isUltimate = isUltimate;
 		this.abilityBehavior = abilityBehavior;
+	}
+
+	public HeroAbility(String abilityName, JSONObject data) throws NumberFormatException, JSONException {
+		HeroDao heroDao = HeroDao.getInstance();
+		this.id = Integer.parseInt(data.getString("ID"));
+		this.name = abilityName;
+		Hero owningHero = heroDao.findHero(HeroAbility.abilityNameToHero.get(abilityName));
+		this.owningHero = owningHero;
+		owningHero.getAbilities().add(this);
+		this.abilityBehavior = data.getString("AbilityBehavior");
+		this.isUltimate = data.getString("AbilityType").equals("DOTA_ABILITY_TYPE_ULTIMATE");
+		this.ranks = Rank.makeRanks(this, data);
 	}
 
 	
