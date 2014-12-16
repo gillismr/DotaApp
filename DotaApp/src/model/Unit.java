@@ -142,6 +142,7 @@ public class Unit {
 		unitNameToId.put(this.name, this.id);
 	}
 
+	@SuppressWarnings("unchecked")
 	public Unit(String unitName, JSONObject data) {
 		this.name = unitName;
 		Iterator<String> attributeNames = data.keys();

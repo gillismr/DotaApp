@@ -34,13 +34,6 @@ public class ItemDao {
 		return item;
 	}
 	
-	public Item findItem(String name) {
-		Item item = null;
-		em.getTransaction().begin();
-		item = em.find(Item.class, name);
-		em.getTransaction().commit();
-		return item;
-	}
 	
 	@SuppressWarnings("unchecked")
 	public List<Item> findAllItems(){
@@ -59,10 +52,10 @@ public class ItemDao {
 	}
 	
 	public void initItems(List<Item> items){
-		em.getTransaction().begin();
-		Query q = em.createNamedQuery("Item.dropAll");
-		q.executeUpdate();
-		em.getTransaction().commit();
+		//em.getTransaction().begin();
+		//Query q = em.createNamedQuery("Item.dropAll");
+		//q.executeUpdate();
+		//em.getTransaction().commit();
 		for(Item item:items)
 			createItem(item);
 	}
@@ -85,23 +78,12 @@ public class ItemDao {
 		return allSubItems;
 	}
 
-	public List<Item> findAllComponentsExhaustive(String name) {
-		List<Item> allSubItems = new ArrayList<Item>();
-		Item subItem = null;
-		Item rootItem = this.findItem(name);
-		for(Component onePart:rootItem.getMadeFrom()){
-			subItem = this.findItem(onePart.getIsUsed().getId());
-			allSubItems.add(subItem);
-			allSubItems.addAll(this.findAllComponentsExhaustive(subItem.getId()));
-		}
-		return allSubItems;
-	}
 	
 	@SuppressWarnings("unchecked")
 	public List<Item> findAllItemsWithAura(){
 		List<Item> auraItems = new ArrayList<Item>();
 		em.getTransaction().begin();
-		Query q = em.createQuery("SELECT i.* from item i join itemaura ia ON ia.ITEM_ID = i.ID");
+		Query q = em.createQuery("SELECT item FROM item JOIN itemaura ia ON ia.ITEM_ID = i.ID");
 		auraItems = q.getResultList();
 		em.getTransaction().commit();
 		return auraItems;

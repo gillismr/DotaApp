@@ -4,8 +4,8 @@ import java.util.List;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 
 import model.Item;
 import access.ItemDao;
@@ -28,30 +28,17 @@ public class ItemWebService {
 	
 	@GET
 	@Produces("application/json")
-	@Path("/id?={id}")
-	public Item getItemsForId(@PathParam("id") int id){
+	@Path("/for_id")
+	public Item getItemsForId(@QueryParam("id") int id){
 		return dao.findItem(id);
 	}
 	
-	@GET
-	@Produces("application/json")
-	@Path("/name?={name}")
-	public Item getItemForName(@PathParam("name") String name){
-		return dao.findItem(name);
-	}
 	
 	@GET
 	@Produces("application/json")
-	@Path("/all_parts_item_id?={id}")
-	public List<Item> getAllComponentsForId(@PathParam("id") int id){
+	@Path("/all_parts_item_id")
+	public List<Item> getAllComponentsForId(@QueryParam("id") int id){
 		return dao.findAllComponentsExhaustive(id);
-	}
-	
-	@GET
-	@Produces("application/json")
-	@Path("/all_parts_item_name?={name}")
-	public List<Item> getAllComponentsForId(@PathParam("name") String name){
-		return dao.findAllComponentsExhaustive(name);
 	}
 	
 	@GET
