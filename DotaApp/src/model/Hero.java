@@ -72,7 +72,7 @@ public class Hero implements Serializable {
 
 	public Hero(String key, JSONObject data) throws NumberFormatException, JSONException{
 		this.id = Integer.parseInt(data.getString("HeroID"));
-		this.name = key;
+		this.name = key.substring(14, key.length());
 		this.baseArmor = Double.parseDouble(data.getString("ArmorPhysical"));
 		this.baseMagicRes = Double.parseDouble(data.getString("MagicalResistance"));
 		this.melee = data.getString("AttackCapabilities").equals("DOTA_UNIT_CAP_MELEE_ATTACK");
@@ -85,7 +85,7 @@ public class Hero implements Serializable {
 			this.projectileSpeed = 0;	
 		else 
 			this.projectileSpeed = Integer.parseInt(data.getString("ProjectileSpeed"));
-		this.primaryAttribute = data.getString("AttributePrimary");
+		this.primaryAttribute = data.getString("AttributePrimary").substring(15);
 		this.baseStr = Integer.parseInt(data.getString("AttributeBaseStrength"));
 		this.strGain = Double.parseDouble(data.getString("AttributeStrengthGain")) ;
 		this.baseInt = Integer.parseInt(data.getString("AttributeBaseIntelligence"));

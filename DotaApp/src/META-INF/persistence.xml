@@ -21,7 +21,7 @@
 				<property name="eclipselink.jdbc.driver" value="com.mysql.jdbc.Driver"/>
 				<property name="eclipselink.jdbc.url" value="jdbc:mysql://localhost/dotaapplication"/>
 				<property name="eclipselink.logging.level" value="OFF"/>
-				<!-- <property name="eclipselink.ddl-generation" value="drop-and-create-tables"/> -->
+				<property name="eclipselink.ddl-generation" value="drop-and-create-tables"/>
 			</properties>
 	</persistence-unit>
 </persistence>

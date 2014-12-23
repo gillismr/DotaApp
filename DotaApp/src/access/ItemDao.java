@@ -83,7 +83,7 @@ public class ItemDao {
 	public List<Item> findAllItemsWithAura(){
 		List<Item> auraItems = new ArrayList<Item>();
 		em.getTransaction().begin();
-		Query q = em.createQuery("SELECT item FROM item JOIN itemaura ia ON ia.ITEM_ID = i.ID");
+		Query q = em.createQuery("SELECT * FROM item i JOIN itemaura ia ON ia.ITEM_ID = i.ID");
 		auraItems = q.getResultList();
 		em.getTransaction().commit();
 		return auraItems;
